@@ -1,0 +1,67 @@
+{
+  "corpora": [
+    "TUH_EEG",
+    "CHB-MIT",
+    "Sleep-EDF",
+    "BIDS-EEG",
+    "TUAR"
+  ],
+  "decisions": {
+    "annotation_intervals": "required",
+    "annotation_vocabulary": "required",
+    "channel_names": "required",
+    "channel_positions_3d": "optional",
+    "channel_types": "optional",
+    "channel_units": "required",
+    "duration_sec": "required",
+    "filter_settings": "required",
+    "institution": "optional",
+    "montage_system": "required",
+    "n_channels": "required",
+    "power_line_frequency": "optional",
+    "provenance": "required",
+    "recording_datetime": "required",
+    "reference_scheme": "required",
+    "sampling_rate_hz": "required",
+    "signal_array": "required",
+    "subject_age": "required",
+    "subject_id": "required",
+    "subject_sex": "required",
+    "task": "optional"
+  },
+  "full_corpus_scan": "unmeasured",
+  "full_corpus_scan_measurement": "After TUH DUA + PhysioNet downloads, walk one file per corpus and fill presence from actual headers/sidecars. That replaces this inventory.",
+  "optional_fields": [
+    "channel_types",
+    "channel_positions_3d",
+    "power_line_frequency",
+    "institution",
+    "task"
+  ],
+  "required_fields": [
+    "signal_array",
+    "channel_names",
+    "channel_units",
+    "sampling_rate_hz",
+    "n_channels",
+    "duration_sec",
+    "montage_system",
+    "reference_scheme",
+    "annotation_intervals",
+    "annotation_vocabulary",
+    "provenance",
+    "subject_id",
+    "subject_age",
+    "subject_sex",
+    "recording_datetime",
+    "filter_settings"
+  ],
+  "source_note": "Presence codes from published specs, not a byte scan of the corpora. always / often / rare / never.",
+  "sources": {
+    "BIDS-EEG": "BIDS EEG specification (Pernet et al. 2019). eeg.json, channels.tsv, electrodes.tsv, events.tsv, participants.tsv.",
+    "CHB-MIT": "PhysioNet chbmit (Shoeb 2009). EDF, 256 Hz, bipolar 10-20, seizure annotations in per-subject summary text.",
+    "Sleep-EDF": "PhysioNet sleep-edfx (Kemp et al.). EDF + hypnogram EDF, 100 Hz EEG, Fpz-Cz / Pz-Oz, stages W/1/2/3/4/R.",
+    "TUAR": "TUH EEG Artifact Corpus v3.0.1 documentation. Same EDF+ container as TUEG; labels EYEM, CHEW, SHIV, ELPP, MUSC.",
+    "TUH_EEG": "Obeid & Picone 2016 PMC4865520; TUH electrodes_and_channels technical report; TUEG overview (EDF+, 250 Hz typical, 24-36 ch, AR/LE TCP montages)."
+  }
+}

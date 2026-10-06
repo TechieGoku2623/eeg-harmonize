@@ -1,0 +1,6 @@
+cff-version: 1.2.0
+title: eeg-harmonize
+message: Conversion infrastructure. Not a diagnostic.
+type: software
+license: MIT
+version: 0.1.0

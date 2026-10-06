@@ -1,0 +1,66 @@
+{
+  "controlled": [
+    "seizure",
+    "background",
+    "artifact",
+    "sleep_wake",
+    "sleep_n1",
+    "sleep_n2",
+    "sleep_n3",
+    "sleep_rem",
+    "movement"
+  ],
+  "mapping": {
+    "TUSZ": {
+      "bckg": "background",
+      "sez": "seizure",
+      "fnsz": "seizure",
+      "gnsz": "seizure",
+      "spsz": "seizure",
+      "cpsz": "seizure",
+      "absz": "seizure",
+      "tnsz": "seizure",
+      "tcsz": "seizure",
+      "mysz": "seizure",
+      "atsz": "seizure"
+    },
+    "CHB-MIT": {
+      "seizure": "seizure",
+      "interictal": "background"
+    },
+    "Sleep-EDF": {
+      "Sleep stage W": "sleep_wake",
+      "Sleep stage 1": "sleep_n1",
+      "Sleep stage 2": "sleep_n2",
+      "Sleep stage 3": "sleep_n3",
+      "Sleep stage 4": "sleep_n3",
+      "Sleep stage R": "sleep_rem",
+      "Movement time": "movement",
+      "Sleep stage ?": null
+    },
+    "TUAR": {
+      "eyem": "artifact",
+      "chew": "artifact",
+      "shiv": "artifact",
+      "elpp": "artifact",
+      "musc": "artifact",
+      "null": "background"
+    },
+    "BIDS-EEG": {
+      "stimulus": null,
+      "response": null,
+      "seizure": "seizure",
+      "artifact": "artifact",
+      "rest": "background",
+      "task": null,
+      "eye_blink": "artifact"
+    }
+  },
+  "sources": {
+    "TUSZ": "TUH seizure annotation guidelines; labels listed in the TUSZ technical report (PAR 10199698).",
+    "CHB-MIT": "PhysioNet chbmit seizure start/end comments; interictal is implicit.",
+    "Sleep-EDF": "Rechtschaffen & Kales hypnogram labels as stored in sleep-edfx hypnogram EDFs.",
+    "TUAR": "TUH Artifact Corpus v3.0.1: EYEM, CHEW, SHIV, ELPP, MUSC.",
+    "BIDS-EEG": "BIDS events.tsv trial_type is unconstrained; this is a common-example set, not a standard."
+  }
+}
