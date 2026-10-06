@@ -1,0 +1,17 @@
+{
+  "bad_units_message": "unit_scale: header unit=V but peak |amplitude|=31.37; expected |V| << 0.01 for scalp EEG. Measured 1e6-scale mismatch.",
+  "bad_units_rejected": true,
+  "clean_convert_ok": true,
+  "clean_n_channels": 8,
+  "decision": "Default resampler remains resample_poly. Designed-clip convert: clean succeeds, bad-units unit_scale fails, odd-channels drops CB1/CB2. TUH transfer matrix unmeasured.",
+  "default_resampler": "resample_poly",
+  "odd_dropped": [
+    "CB1",
+    "CB2"
+  ],
+  "odd_unmappable": [
+    "sleepy-wiggle"
+  ],
+  "phase0_default_resampler": "resample_poly",
+  "tuh_downloaded": false
+}

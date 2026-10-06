@@ -12,10 +12,10 @@ disagreements stop looking like dataset effects.
 
 | Phase | Deliverable | Status |
 | --- | --- | --- |
-| 0 | Research memo and harnesses | In review — docs/phase-0/research-memo.md |
-| 1 | Architecture, schemas, data contracts | Not started |
-| 2 | First vertical slice | Not started |
-| 3 | Evaluation and demo | Not started |
+| 0 | Research memo and harnesses | Phase 0 Merged |
+| 1 | Architecture, schemas, data contracts | Phases 1–3 Merged |
+| 2 | First vertical slice | Phases 1–3 Merged |
+| 3 | Evaluation and demo | Phases 1–3 Merged |
 
 Status values: Not started / In progress / In review / Merged.
 
@@ -36,73 +36,106 @@ bytes are not committed; access needs an NEDC agreement (see `docs/DATA.md`).
 
 ## Walkthrough
 
-Phase 0 ships the designed clips and the measurements. `eegh inspect` and
-`eegh convert` are Phase 2.
+`make demo` is the full walkthrough: inspect clean, convert clean, convert
+bad-units (expected fail), convert odd-channels --report, then `make eval`.
+No credentials. No TUH download. Under five minutes.
 
-### Step 1 — designed clips
+Recordings: `demo/01-inspect-and-convert.cast`,
+`demo/02-validation-failures.cast`, `demo/03-fidelity-benchmark.cast`.
+
+### Step 1 — inspect a clean 10-20 clip
 
 ```bash
-make setup && make demo
+make setup && eegh inspect data/sample/clean.edf
 ```
 
-`make demo` prints the five committed EDFs. Actual stdout:
+Actual stdout:
 
 ```
-eeg-harmonize designed sample clips
-
-clean.edf
-  path:     standard 10-20 conversion
-  expected: inspect + convert succeed; no channel drops
-
-bad-units.edf
-  path:     µV data, header claims V
-  expected: unit_scale validator rejects; non-zero exit
-
-odd-channels.edf
-  path:     CB1/CB2 have no 10-20 equivalent
-  expected: drop and log; never rename
-
-unmapped-annots.edf
-  path:     terms outside the controlled set
-  expected: unmappable bucket, reported
-
-offset-annots.edf
-  path:     off-by-one sample annotation
-  expected: alignment test fails on 1/256 s offset
+inspect  data/sample/clean.edf
+montage:     10-20
+sfreq:       256.0 Hz
+reference:   unknown
+channels:    8  Fp1, Fp2, C3, C4, O1, O2, T7, T8
+duration:    30.000 s
+ann. vocab:  seizure
+present:     signal_array, channel_names, channel_units, sampling_rate_hz,
+n_channels, duration_sec, montage_system, reference_scheme,
+annotation_intervals, annotation_vocabulary, recording_datetime, filter_settings
+missing:     channel_types, provenance, subject_id, subject_age, subject_sex,
+channel_positions_3d, power_line_frequency, institution, task
 
 Research infrastructure. Harmonized EEG is not a diagnostic and is not clinical
 advice. Sample clips in this repository are designed, not patient records.
 ```
 
-They are not the first 100 rows of any corpus.
-
-Recordings `demo/01-inspect-and-convert.cast` land in Phase 3.
-
-### Step 2 — convert with provenance (Phase 2)
+### Step 2 — convert with provenance
 
 ```bash
-eegh convert --in data/sample/clean.edf --out /tmp/out.parquet
+eegh convert --in data/sample/clean.edf
 ```
 
-Reserved. Any harmonized file has to trace to the source operation chain.
+Actual stdout:
 
-### Step 3 — unit-scale rejection (Phase 2)
+```
+convert  data/sample/clean.edf
+sfreq:       256.0 Hz
+channels:    8 → 8
+resampler:   resample_poly
+dropped:     (none)
+provenance:
+  - read_edf:data/sample/clean.edf
+  - check_units:pass
+  - map_annotations:seizure->seizure
+  - resample_poly:identity(256.0 Hz)
+
+Research infrastructure. Harmonized EEG is not a diagnostic and is not clinical
+advice. Sample clips in this repository are designed, not patient records.
+```
+
+Optional `--out` writes JSON or a small parquet plus `.meta.json`. The demo
+does not require an output file.
+
+### Step 3 — unit-scale rejection
 
 ```bash
 eegh convert --in data/sample/bad-units.edf
 ```
 
-Reserved. `unit_scale` already exists as a Phase 0 check and is tested:
-header `V` plus peak ≫ 0.01 is a hard fail. That is the failure mode this
-library exists to prevent.
+Actual stdout (exit code 1):
 
-### Step 4 — dropped channels, reported (Phase 2)
+```
+unit_scale: unit_scale: header unit=V but peak |amplitude|=31.37; expected |V|
+<< 0.01 for scalp EEG. Measured 1e6-scale mismatch.
+Research infrastructure. Harmonized EEG is not a diagnostic and is not clinical
+advice. Sample clips in this repository are designed, not patient records.
+```
+
+### Step 4 — dropped channels, reported
 
 ```bash
 eegh convert --in data/sample/odd-channels.edf --report
 ```
 
-Reserved. CB1 and CB2 have no 10-20 equivalent. Drop and log, never rename.
+Actual stdout:
+
+```
+convert  data/sample/odd-channels.edf
+sfreq:       256.0 Hz
+channels:    10 → 8
+resampler:   resample_poly
+dropped:     CB1, CB2  (no 10-20 equivalent; never renamed)
+unmappable:  sleepy-wiggle
+provenance:
+  - read_edf:data/sample/odd-channels.edf
+  - check_units:pass
+  - drop_noncanonical:CB1,CB2
+  - map_annotations:seizure->seizure,sleepy-wiggle->unmappable
+  - resample_poly:identity(256.0 Hz)
+
+Research infrastructure. Harmonized EEG is not a diagnostic and is not clinical
+advice. Sample clips in this repository are designed, not patient records.
+```
 
 ### Step 5 — measured fidelity
 
@@ -110,8 +143,9 @@ Reserved. CB1 and CB2 have no 10-20 equivalent. Drop and log, never rename.
 make eval
 ```
 
-Runs now. Regenerates `docs/EVALUATION.md` from the three harnesses,
-including the resampler table and the annotation overlap matrix.
+Regenerates `docs/EVALUATION.md` from the Phase 0 harnesses plus the Phase 3
+designed-clip convert table. Default resampler remains `resample_poly`. TUH
+is not downloaded; the transfer matrix is unmeasured.
 
 ## Layout
 
@@ -120,7 +154,9 @@ including the resampler table and the annotation overlap matrix.
 3. `src/eeg_harmonize/schema.py` — canonical field list
 4. `src/eeg_harmonize/edf.py` — the committed-clip codec
 5. `src/eeg_harmonize/validate.py` — unit-scale and channel-drop checks
-6. `research/phase0/` — the measurements
+6. `src/eeg_harmonize/inspect.py` / `convert.py` — Phase 2 vertical slice
+7. `research/phase0/` — the measurements
+8. `research/phase3/` — designed-clip convert / unit_scale eval
 
 ## Results
 
@@ -133,7 +169,8 @@ Regenerated by `make eval`. Baseline column is mandatory.
 | Default resampler | resample_poly | naive decimate |
 | Required canonical fields | 16 | all 21 required |
 | Unified flat annotation enum | no (mean Jaccard 0.013) | assume yes |
-| Cross-dataset transfer matrix | Phase 3 | unharmonized MNE |
+| Designed-clip convert | ok; unit_scale rejects bad-units | silent unit/channel errors |
+| Cross-dataset transfer matrix | not run (TUH not downloaded) | unharmonized MNE |
 
 <!-- EVAL_TABLE_END -->
 
@@ -149,14 +186,12 @@ flowchart LR
     units --> fail[ValidationError]
     chans --> kept[kept / dropped]
     annots --> bucket[controlled or unmappable]
-    subgraph later [Phase 2]
-      adapt[corpus adapter plugin]
-      store[Parquet + Zarr + provenance]
-    end
+    rec --> convert[convert_recording]
+    convert --> prov[append-only provenance]
 ```
 
-`EdfRecording` is the Phase 0 data object. The Phase 2 canonical record adds
-provenance operations as an append-only list.
+`EdfRecording` is the Phase 0 data object. Convert adds an append-only
+provenance chain (`read_edf` → `check_units` → drop / map / `resample_poly`).
 
 ## ⚖️ Architecture Trade-offs & Pragmatic Decisions
 
@@ -180,8 +215,8 @@ provenance operations as an append-only list.
 ## Limitations
 
 Not a diagnostic. Not a TUH redistributor. Not a finished adapter suite.
-Phase 0 does not convert to Parquet, does not train the transfer model, and
-does not record asciinema.
+Designed clips convert with a provenance chain. TUH bytes are not present.
+The cross-dataset transfer matrix is unmeasured.
 
 ## License and citation
 

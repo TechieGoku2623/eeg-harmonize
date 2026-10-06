@@ -49,7 +49,7 @@ packages = ["eeg_harmonize"]
 explicit_package_bases = true
 
 [[tool.mypy.overrides]]
-module = ["scipy.*"]
+module = ["scipy.*", "duckdb.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
