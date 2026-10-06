@@ -1,0 +1,74 @@
+{
+  "coverage": {
+    "BIDS-EEG": {
+      "mapped": 4,
+      "mapped_fraction": 0.5714285714285714,
+      "n": 7,
+      "unmapped": 3
+    },
+    "CHB-MIT": {
+      "mapped": 2,
+      "mapped_fraction": 1.0,
+      "n": 2,
+      "unmapped": 0
+    },
+    "Sleep-EDF": {
+      "mapped": 7,
+      "mapped_fraction": 0.875,
+      "n": 8,
+      "unmapped": 1
+    },
+    "TUAR": {
+      "mapped": 6,
+      "mapped_fraction": 1.0,
+      "n": 6,
+      "unmapped": 0
+    },
+    "TUSZ": {
+      "mapped": 11,
+      "mapped_fraction": 1.0,
+      "n": 11,
+      "unmapped": 0
+    }
+  },
+  "decision": "Unified flat enum is not achievable (mean off-diagonal Jaccard 0.013 < 0.25 threshold). Keep a small controlled set plus an unmappable bucket; store the raw label.",
+  "jaccard": {
+    "BIDS-EEG": {
+      "BIDS-EEG": 1.0,
+      "CHB-MIT": 0.125,
+      "Sleep-EDF": 0.0,
+      "TUAR": 0.0,
+      "TUSZ": 0.0
+    },
+    "CHB-MIT": {
+      "BIDS-EEG": 0.125,
+      "CHB-MIT": 1.0,
+      "Sleep-EDF": 0.0,
+      "TUAR": 0.0,
+      "TUSZ": 0.0
+    },
+    "Sleep-EDF": {
+      "BIDS-EEG": 0.0,
+      "CHB-MIT": 0.0,
+      "Sleep-EDF": 1.0,
+      "TUAR": 0.0,
+      "TUSZ": 0.0
+    },
+    "TUAR": {
+      "BIDS-EEG": 0.0,
+      "CHB-MIT": 0.0,
+      "Sleep-EDF": 0.0,
+      "TUAR": 1.0,
+      "TUSZ": 0.0
+    },
+    "TUSZ": {
+      "BIDS-EEG": 0.0,
+      "CHB-MIT": 0.0,
+      "Sleep-EDF": 0.0,
+      "TUAR": 0.0,
+      "TUSZ": 1.0
+    }
+  },
+  "mean_offdiagonal_jaccard": 0.0125,
+  "unified_flat_enum_achievable": false
+}

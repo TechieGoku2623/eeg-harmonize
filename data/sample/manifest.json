@@ -1,0 +1,32 @@
+{
+  "seed": 0,
+  "sfreq": 256.0,
+  "duration_sec": 30.0,
+  "clips": [
+    {
+      "file": "clean.edf",
+      "path_exercised": "standard 10-20 conversion",
+      "expected_behavior": "inspect + convert succeed; no channel drops"
+    },
+    {
+      "file": "bad-units.edf",
+      "path_exercised": "\u00b5V data, header claims V",
+      "expected_behavior": "unit_scale validator rejects; non-zero exit"
+    },
+    {
+      "file": "odd-channels.edf",
+      "path_exercised": "CB1/CB2 have no 10-20 equivalent",
+      "expected_behavior": "drop and log; never rename"
+    },
+    {
+      "file": "unmapped-annots.edf",
+      "path_exercised": "terms outside the controlled set",
+      "expected_behavior": "unmappable bucket, reported"
+    },
+    {
+      "file": "offset-annots.edf",
+      "path_exercised": "off-by-one sample annotation",
+      "expected_behavior": "alignment test fails on 1/256 s offset"
+    }
+  ]
+}

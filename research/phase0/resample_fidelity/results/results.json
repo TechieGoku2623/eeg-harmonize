@@ -1,0 +1,30 @@
+{
+  "decision": "Default resampler = resample_poly. Criterion: corr>=0.95 vs the 80 Hz-removed reference, then minimum Welch power in 50\u201364 Hz.",
+  "default_method": "resample_poly",
+  "dst_hz": 128,
+  "duration_sec": 8.0,
+  "methods": {
+    "fourier_resample": {
+      "alias_power": 1.7664219020737777e-05,
+      "corr": 0.9992134398350259,
+      "rmse": 0.034710744625630965
+    },
+    "linear_interp": {
+      "alias_power": 3.882624850420925e-05,
+      "corr": 0.9259856282634998,
+      "rmse": 0.3563221285957511
+    },
+    "naive_decimate": {
+      "alias_power": 3.882624850420925e-05,
+      "corr": 0.9259856282634998,
+      "rmse": 0.3563221285957511
+    },
+    "resample_poly": {
+      "alias_power": 1.3916471623310408e-05,
+      "corr": 0.9991900177549841,
+      "rmse": 0.03526883005489002
+    }
+  },
+  "seed": 0,
+  "src_hz": 256
+}
