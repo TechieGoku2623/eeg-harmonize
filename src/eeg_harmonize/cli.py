@@ -17,8 +17,22 @@ from eeg_harmonize.inspect import inspect_recording
 from eeg_harmonize.logging import configure_logging
 from eeg_harmonize.validate import ValidationError
 
+
+def _print_eval_summary() -> None:
+    path = get_settings().repo_root / "docs" / "EVALUATION.md"
+    n = 0
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("# Evaluation"):
+            continue
+        console.print(line[:100])
+        if line.strip():
+            n += 1
+        if n >= 14:
+            break
+
+
 app = typer.Typer(no_args_is_help=True, add_completion=False)
-console = Console(width=140)
+console = Console(width=100)
 
 
 @app.callback()
@@ -68,7 +82,7 @@ def _print_inspect(path: Path) -> None:
     console.print(SAFETY_DISCLAIMER)
 
 
-def _print_convert(report: ConvertReport, *, show_report: bool) -> None:
+def _print_convert(report: ConvertReport, *, show_report: bool, summary: bool = False) -> None:
     console.print(f"[bold]convert[/bold]  {report.source_path}")
     console.print(f"sfreq:       {report.sfreq} Hz")
     console.print(f"channels:    {report.n_channels_in} → {report.n_channels_out}")
@@ -100,8 +114,9 @@ def _print_convert(report: ConvertReport, *, show_report: bool) -> None:
             )
         if report.annotations:
             console.print(table)
-        console.print(f"present:     {', '.join(report.present_fields)}")
-        console.print(f"missing:     {', '.join(report.missing_fields)}")
+        if not summary:
+            console.print(f"present:     {', '.join(report.present_fields)}")
+            console.print(f"missing:     {', '.join(report.missing_fields)}")
     console.print()
     console.print(SAFETY_DISCLAIMER)
 
@@ -121,6 +136,10 @@ def convert_cmd(
         bool,
         typer.Option("--report", help="Print dropped channels and annotation map"),
     ] = False,
+    summary: Annotated[
+        bool,
+        typer.Option("--summary", help="Skip present/missing field dump"),
+    ] = False,
 ) -> None:
     """Apply transforms and print the provenance chain. Hard-fails on unit_scale."""
 
@@ -130,7 +149,20 @@ def convert_cmd(
         console.print(f"[red]{exc.check}: {exc}[/red]")
         console.print(SAFETY_DISCLAIMER)
         raise typer.Exit(code=1) from exc
-    _print_convert(result, show_report=report)
+    _print_convert(result, show_report=report, summary=summary)
+
+
+@app.command("eval")
+def eval_cmd(
+    summary: bool = typer.Option(True, "--summary/--full"),
+) -> None:
+    """Print the published Phase 3 table (same numbers as `make eval`)."""
+
+    _print_eval_summary()
+    if not summary:
+        console.print("Full harness output: make eval")
+    console.print()
+    console.print(SAFETY_DISCLAIMER)
 
 
 @app.command("validate")

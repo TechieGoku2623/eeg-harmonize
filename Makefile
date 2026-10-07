@@ -1,7 +1,7 @@
 export PATH := $(HOME)/.local/bin:$(PATH)
 UV ?= uv
 
-.PHONY: setup lint test research eval demo record
+.PHONY: demo-shots setup lint test research eval demo record
 
 setup:
 	$(UV) sync --extra dev
@@ -35,5 +35,9 @@ demo:
 	$(UV) run eegh convert --in data/sample/odd-channels.edf --report
 	$(MAKE) eval
 
+demo-shots:
+	$(UV) run --with pyyaml python demo/verify_shots.py
+
 record:
 	bash demo/record.sh
+	bash demo/render.sh

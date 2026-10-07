@@ -1,0 +1,39 @@
+title: eeg-harmonize
+tagline: A canonical schema and conversion layer for public EEG corpora
+problem:
+  - Every public EEG corpus uses a different montage, rate, and vocabulary.
+  - Researchers rewrite conversion code before any modeling begins.
+  - Each lab's version is subtly different, breaking comparability.
+shots:
+  - id: 01-inspect
+    command: eegh inspect data/sample/clean.edf
+    caption: What a corpus actually contains, before converting anything
+    hold: 3.5
+    failure_beat: false
+  - id: 02-convert
+    command: eegh convert --in data/sample/clean.edf --out /tmp/eeg-out.parquet
+    caption: Provenance records every transform and its parameters
+    hold: 3.5
+    highlight: "provenance"
+    failure_beat: false
+  - id: 03-bad-units
+    command: eegh convert --in data/sample/bad-units.edf
+    caption: Header says volts, data is microvolts — rejected, exit 1
+    hold: 4.5
+    highlight: "unit_scale|expected|measured"
+    failure_beat: true
+    expect_exit: 1
+  - id: 04-odd-channels
+    command: eegh convert --in data/sample/odd-channels.edf --report --summary
+    caption: Dropped channels and unmappable terms are reported, never silent
+    hold: 3.5
+    highlight: "dropped|unmappable"
+    failure_beat: false
+results:
+  command: eegh eval --summary
+  caption: Round-trip fidelity and the cross-dataset transfer matrix
+  hold: 6.0
+end_card:
+  url: github.com/techiegoku2623/eeg-harmonize
+  license: MIT
+gif_beat: 03-bad-units

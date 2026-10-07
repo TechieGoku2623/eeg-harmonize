@@ -8,6 +8,11 @@ disagreements stop looking like dataset effects.
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+
+![eeg-harmonize demo](demo/out/eeg-harmonize-demo.gif)
+
+Regenerable terminal video: `make record`. [Full mp4](demo/out/eeg-harmonize-demo.mp4). Per-shot loops live in `demo/out/`. See `demo/README.md`.
+
 ## Status
 
 | Phase | Deliverable | Status |
